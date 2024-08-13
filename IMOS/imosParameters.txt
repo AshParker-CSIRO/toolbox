@@ -11,6 +11,8 @@
 % of a comment.
 %
 
+A1,		     0, first_term_of_the_Fourier_cosine_series,						  1,		,		,				   W, -999, 	-1.0,	   1.0,	    float
+A2,		     0, second_term_of_the_Fourier_cosine_series,						  1,		,		,				   W, -999, 	-1.0,	   1.0,	    float
 ABSI,                0, backscatter_intensity_from_acoustic_beam,                                                 decibel,       ,              ,                                  A, 999999.0, 0.0,      150.0,    float
 ABSI1,               0, backscatter_intensity_from_acoustic_beam_1,                                               decibel,       ,              ,                                  A, 999999.0, 0.0,      150.0,    float
 ABSI2,               0, backscatter_intensity_from_acoustic_beam_2,                                               decibel,       ,              ,                                  A, 999999.0, 0.0,      150.0,    float
@@ -31,6 +33,8 @@ PERG4,               0, percentage_of_good_four_beam_solutions,                 
 AIRT,                1, air_temperature,                                                                          degrees_Celsius,,             ,                                  M, 999999.0, -50.0,    50.0,     float
 ATMP,                1, air_pressure,                                                                             Pascal,        ,              ,                                  M, 999999.0, 90000.0,  110000.0, float
 ATMS,                1, air_pressure_at_mean_sea_level,                                                           Pascal,        ,              ,                                  M, 999999.0, 90000.0,  110000.0, float
+B1,		     0, first_term_of_the_Fourier_sine_series,						  	  1,		,		,				   W, -999, 	-1.0,	   1.0,	    float
+B2,		     0, second_term_of_the_Fourier_sine_series,						  	  1,		,		,				   W, -999, 	-1.0,	   1.0,	    float
 BAT,                 1, volume_beam_attenuation_coefficient_of_radiative_flux_in_sea_water,                       m-1,           ,              ,                                  E, 999999.0, ,         ,         float
 BOT_DEPTH,           1, sea_floor_depth_below_sea_surface,                                                        m,             down,          sea surface,                       E, 999999.0, 0.0,      12000.0,  float
 CDIR,                1, direction_of_sea_water_velocity,                                                          degree,        clockwise,     true north,                        V, 999999.0, 0.0,      360.0,    float
@@ -61,6 +65,7 @@ DRYT,                0, dry_bulb_temperature,                                   
 DYNHT,               0, dynamic_height,                                                                           m,             ,              ,                                  E, 999999.0, ,         ,         float
 ECUR,                0, error_sea_water_velocity,                                                                 m s-1,         ,              ,                                  V, 999999.0, -5.0,     5.0,      float
 FLU2,                0, fluorescence_in_sea_water,                                                                count,         ,              ,                                  B, 999999.0, ,         ,         float
+ENERGY,		     0, energy_density,										  m2 Hz,	 , 		,				   W, -999, 	0.0, 	  2000000,  float
 FREQUENCY,           0, frequency,                                                                                Hz,            ,              ,                                  E, 999999.0, 0.0,      900000.0, float
 GDOP,                0, radar_beam_intersection_angle,                                                            degree,        ,              ,                                  E, 999999.0, 0.0,      180.0,    float
 HEADING,             1, platform_yaw_angle,                                                                       degree,        clockwise,     true north,                        E, 999999.0, 0.0,      360.0,    float
@@ -107,8 +112,6 @@ SNR3,                0, signal_noise_ratio_from_acoustic_beam_3,                
 SPCT,                0, awac_spectra_calculation_method,                                                          ,              ,              ,                                  ,  999999.0, 0.0,      3.0,      float
 SPEC_CNDC,           0, sea_water_specific_electrical_conductivity_corrected_at_25degC,                           S m-1,         ,              ,                                  C, 999999.0, 0.0,      50000.0,  float
 SRAD,                1, isotropic_shortwave_radiance_in_air,                                                      W m-1 sr-1,    ,              ,                                  F, 999999.0, ,         ,         float
-SSDS,                0, sea_surface_wave_directional_spread,                                                      degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
-SSDS_MAG,            0, sea_surface_wave_directional_spread,                                                      degree,        clockwise,     magnetic north,                    W, 999999.0, 0.0,      360.0,    float
 SSPD,                1, speed_of_sound_in_sea_water,                                                              m s-1,         ,              ,                                  A, 999999.0, 1400.0,   1600.0,   float
 SSS,                 1, sea_surface_salinity,                                                                     1e-3,          ,              ,                                  S, 999999.0, 2.0,      41.0,     float
 SST,                 1, sea_surface_skin_temperature,                                                             degrees_Celsius,,             ,                                  T, 999999.0, ,         ,         float
@@ -116,6 +119,7 @@ SSTI,                1, sea_surface_temperature,                                
 SSWD,                0, sea_surface_wave_from_direction_by_frequency,                                             degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 SSWD_MAG,            0, sea_surface_wave_from_direction_by_frequency,                                             degree,        clockwise,     magnetic north,                    W, 999999.0, 0.0,      360.0,    float
 SSWDT,               0, sea_surface_wave_to_direction_by_frequency,                                               degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
+SSWMD,		     1, sea_surface_wave_from_direction, 							  degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 SSWST,               0, sea_surface_wave_to_directional_variance,                                                 m2 degree-1,   ,              ,                                  W, 999999.0, ,         ,         float
 SSWV,                1, sea_surface_wave_directional_variance_spectral_density,                                   m2 s degree-1, ,              ,                                  W, 999999.0, ,         ,         float
 SSWV_MAG,            1, sea_surface_wave_directional_variance_spectral_density,                                   m2 s degree-1, ,              ,                                  W, 999999.0, ,         ,         float
@@ -146,7 +150,6 @@ TRAJECTORY,          0, unique_identifier_for_each_trajectory_feature_instance_i
 UCUR,                1, eastward_sea_water_velocity,                                                              m s-1,         ,              true north,                        V, 999999.0, -10.0,    10.0,     float
 UCUR_MAG,            1, eastward_sea_water_velocity,                                                              m s-1,         ,              magnetic north,                    V, 999999.0, -10.0,    10.0,     float
 UWND,                1, eastward_wind,                                                                            m s-1,         ,              ,                                  M, 999999.0, ,         ,         float
-VAVH,                1, sea_surface_wave_significant_height,                                                      m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 VBSC,                0, volumetric_backscatter_coefficient,                                                       m-1 sr-1,      ,              ,                                  E, 999999.0, ,         ,         float
 VCUR,                1, northward_sea_water_velocity,                                                             m s-1,         ,              true north,                        V, 999999.0, -10.0,    10.0,     float
 VCUR_MAG,            1, northward_sea_water_velocity,                                                             m s-1,         ,              magnetic north,                    V, 999999.0, -10.0,    10.0,     float
@@ -163,7 +166,9 @@ VEL3,                0, sea_water_velocity_from_acoustic_beam_3,                
 VEL4,                0, sea_water_velocity_from_acoustic_beam_4,                                                  m s-1,         ,              ,                                  V, 999999.0, -10.0,    10.0,     float
 VOLT,                0, voltage,                                                                                  V,             ,              ,                                  E, 999999.0, -100.0,   100.0,    float
 BAT_VOLT,            0, battery_voltage,                                                                          V,             ,              ,                                  E, 999999.0, -100.0,   100.0,    float
+THMAX, 		     1, sea_surface_wave_period_of_highest_wave, 						  Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 TX_VOLT,            0, transmission_voltage,                                                                      V,             ,              ,                                  E, 999999.0, -100.0,   100.0,    float
+TP2,		     0, sea_surface_wave_period_at_second_largest_peak_of_variance_spectral_density, 		  Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 VSF412,              0, volume_scattering_function_of_radiative_flux_in_sea_water_for_wavelength_412nm,           m-1 sr-1,      ,              ,                                  E, 999999.0, ,         ,         float
 VSF440,              0, volume_scattering_function_of_radiative_flux_in_sea_water_for_wavelength_440nm,           m-1 sr-1,      ,              ,                                  E, 999999.0, ,         ,         float
 VSF470,              0, volume_scattering_function_of_radiative_flux_in_sea_water_for_wavelength_470nm,           m-1 sr-1,      ,              ,                                  E, 999999.0, 0.0,      0.5,      float
@@ -182,23 +187,26 @@ WDIRF_AVG,           1, wind_from_direction,                                    
 WHTE,                1, sea_surface_wave_mean_height_of_highest_tenth,                                            m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WHTH,                1, sea_surface_wave_significant_height,                                                      m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WPFM,                1, sea_surface_wave_mean_period_from_variance_spectral_density_first_frequency_moment,       Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
-WPMH,                1, sea_surface_wave_mean_period,                                                             Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
+WPMH,                1, sea_surface_wave_zero_upcrossing_period,                                                  Second,        ,              ,                                  W, 999999.0, 0.0,      50.0,     float
 WPSM,                1, sea_surface_wave_mean_period_from_variance_spectral_density_second_frequency_moment,      Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WPTE,                1, sea_surface_wave_mean_period_of_highest_tenth,                                            Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WPTH,                1, sea_surface_wave_significant_period,                                                      Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
+WMDS,                1, sea_surface_wave_directional_spread,                                                      degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
+WMDS_MAG,            1, sea_surface_wave_directional_spread,                                                      degree,        clockwise,     magnetic north,                    W, 999999.0, 0.0,      360.0,    float
 WMPP,                1, sea_surface_wave_maximum_period,                                                          Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WMSH,                1, sea_surface_wave_mean_height,                                                             m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WMXH,                1, sea_surface_wave_maximum_height,                                                          m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WPDI,                1, sea_surface_wave_from_direction_at_variance_spectral_density_maximum,                     degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 WPDI_MAG,            1, sea_surface_wave_from_direction_at_variance_spectral_density_maximum,                     degree,        clockwise,     magnetic north,                    W, 999999.0, 0.0,      360.0,    float
 WPDIT,               0, sea_surface_wave_to_direction_at_variance_spectral_density_maximum,                       degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
+WPDS,		     1, sea_surface_wave_directional_spread_at_variance_spectral_density_maximum,		  degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 WPPE,                1, sea_surface_wave_period_at_variance_spectral_density_maximum,                             Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WSMP,                0, sea_surface_wave_spectral_mean_period,                                                    Second,        ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WSPD,                1, wind_speed,                                                                               m s-1,         ,              ,                                  M, 999999.0, ,         ,         float
 WSPD_AVG,            1, wind_speed,                                                                               m s-1,         ,              ,                                  M, 999999.0, ,         ,         float
 WSPD_MIN,            1, wind_speed,                                                                               m s-1,         ,              ,                                  M, 999999.0, ,         ,         float
 WSPD_MAX,            1, wind_speed,                                                                               m s-1,         ,              ,                                  M, 999999.0, ,         ,         float
-WSSH,                0, sea_surface_wave_spectral_significant_height,                                             m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
+WSSH,                1, sea_surface_wave_significant_height,                                                      m,             ,              ,                                  W, 999999.0, 0.0,      100.0,    float
 WWAV,                1, sea_surface_wind_wave_to_direction,                                                       degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 WWDS,                0, sea_surface_wind_wave_directional_spread,                                                 degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
 WWPD,                0, sea_surface_wind_wave_from_direction_at_variance_spectral_density_maximum,                degree,        clockwise,     true north,                        W, 999999.0, 0.0,      360.0,    float
