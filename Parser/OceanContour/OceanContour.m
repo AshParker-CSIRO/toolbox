@@ -192,39 +192,40 @@ classdef OceanContour
             iignore = endsWith(flds,'description');
             descflds = flds(iignore);
             flds = flds(~iignore);
-            attmap.('instrument_model') = flds{contains(flds,'instrumentName')};
-            attmap.('beam_angle') = flds{contains(flds,'slantAngles')};
-            %attmap.('beam_interval') = OceanContour.build_instrument_name(group_name, 'slantAngles');
-            attmap.('coordinate_system') = flds{contains(flds,'coordSystem')};
-            attmap.('converted_to_enu') = descflds{contains(descflds,'transformsAndCorrections_addENU_description')};
-            
             % while this might be a waves file, some info is 'avg' prefix
             if isfield(file_metadata, 'Instrument_avg_enable') & logical(file_metadata.Instrument_avg_enable)
                 inst_data_name = 'avg';
             else
                 inst_data_name = 'burst';
             end
+
+            attmap.('instrument_model') = flds{contains(flds,'_instrumentName')};
+            attmap.('beam_angle') = flds{contains(flds,[group_name '_slantAngles'])};
+            %attmap.('beam_interval') = OceanContour.build_instrument_name(group_name, 'slantAngles');
+            attmap.('coordinate_system') = flds{contains(flds,[inst_data_name '_coordSystem'])};
+            attmap.('converted_to_enu') = descflds{contains(descflds,[group_name '_transformsAndCorrections_addENU_description'])};
+
             has_data_been_averaged = false;
-            iaverage = find(contains(flds,'average_data'));
-            if ~isempty(iaverage) 
+            iaverage = find(contains(flds,[group_name '_average_data']));
+            if ~isempty(iaverage)
                 if logical(file_metadata.(flds{iaverage}))
                     has_data_been_averaged = true;
                 end
             end
-            
-            attmap.('nBeams') = flds{contains(flds,'nBeams')};
-            attmap.('activeBeams') = flds{contains(flds,'activeBeams')}; %no previous name
-            attmap.('magDec_DataInfo') = flds{contains(flds,'trig_en')};
-            attmap.('magDec_User') = flds{contains(flds,'Instrument_user_decl')};
-            attmap.('binMapping') = flds{contains(flds,'transformsAndCorrections_binMapping')};            
-            attmap.('binMapping_applied') = descflds{contains(descflds,'transformsAndCorrections_binMapping_description')};    
- 
+
+            attmap.('nBeams') = flds{contains(flds,[group_name '_nBeams'])};
+            attmap.('activeBeams') = flds{contains(flds,[inst_data_name '_activeBeams'])}; %no previous name
+            attmap.('magDec_DataInfo') = flds{contains(flds, '_trig_en')};
+            attmap.('magDec_User') = flds{contains(flds, 'Instrument_user_decl')};
+            attmap.('binMapping') = flds{contains(flds,'_transformsAndCorrections_binMapping')};
+            attmap.('binMapping_applied') = descflds{contains(descflds, '_transformsAndCorrections_binMapping_description')};
+
             if strcmpi(ftype, 'mat')
                 attmap.('instrument_serial_no') = 'Instrument_serialNumberDoppler';
                 attmap.('binSize') = OceanContour.build_instrument_name(group_name, 'cellSize');
             else
-                attmap.('instrument_serial_no') = flds{contains(flds,'serial')};
-                attmap.('binSize') = flds{contains(flds,['Instrument_' meta_attr_midname '_cellSize'])};
+                attmap.('instrument_serial_no') = flds{contains(flds, 'Instrument_serialNumberDoppler')};
+                attmap.('binSize') = flds{contains(flds,['Instrument_' inst_data_name '_cellSize'])};
 
             end
 
