@@ -573,6 +573,77 @@ classdef OceanContour
             imap.('XYZ') = XYZ;
         end
 
+        function [imap] = get_importmap_waves(nbeams, custom_magnetic_declination)
+            %function [imap] = get_importmap_waves(custom_magnetic_declination)
+            %
+            % Return default variables to import from the OceanContour files.
+            %
+            % Inputs:
+            %
+            % nbeams [scalar] - the number of ADCP beams.
+            % custom_magnetic_declination [logical] - true for custom
+            %                                         magnetic values.
+            %
+            % Outputs:
+            %
+            % imap [struct[cell]] - Struct with different variables
+            %                       classes to import
+            %
+            %
+            % Example:
+            %
+            % %basic usage
+            % imap = OceanContour.get_importmap_waves(False);
+            % assert(inCell(imap.all_variables,'PITCH'))
+            % assert(inCell(imap.all_variables,'ROLL'))
+            %
+            % author: hugo.oliveira@utas.edu.au
+            %
+            narginchk(2, 2)
+
+            if ~isscalar(nbeams)
+                errormsg('First argument is not a scalar')
+            elseif ~islogical(custom_magnetic_declination)
+                errormsg('Second argument is not a logical')
+            end
+
+            imap = struct();
+
+            ENU = struct();
+
+            ENU.one_dimensional = {'TEMP', 'PRES_REL', 'BAT_VOLT', 'PITCH', 'ROLL', 'HEADING'};
+            ENU.quality_control_variables = {'TEMP_quality_control', 'WAVE_quality_control'};
+            ENU.wave_variables = {'WSSH', 'WPMH','WPFM','WPPE','SSWMD','WPDI','WMDS','WPDS','WMXH','WPSM','WPTH','WPTE','THMAX'};
+
+            ENU.two_dimensional = {'ENERGY','A1','A2','B1','B2'};
+            ENU.all_variables = [ENU.one_dimensional, ENU.two_dimensional];
+            imap.('ENU') = ENU;
+        end
+            
+         function imos_name = get_imos_mapped_name(var_name, var_map, mag_dec)
+            % TODO: if a directional variable has not undergone
+            % magnetic declination append '_MAG', but is it the variable
+            % and or the dimension that should be fixed?
+            % read in the map from the excel file:
+            mag_params = {'CurrentDirection' 'Direction_DirTp'...
+                'Direction_SprTp' 'Direction_MeanDir' 'Heading'...
+                'Direction' 'ASTSpectra_Direction' 'PressureSpectra_Direction'...
+                'VelocitySpectra_Direction'};
+            imos_name = var_name;
+            mapped_name = var_map(var_name).imos_name;
+            if ~isempty(mapped_name)
+                imos_name = mapped_name;
+            end
+            % Not implemented yet until magneticDeclinationPP can be
+            % updated to handled required transforms
+            %             if ~mag_dec
+            %                 if ismember(var_name, mag_params)
+            %                     imos_name = strcat(imos_name, '_MAG');
+            %                 end
+            %             end
+
+        end
+
         function [sample_data] = readOceanContourFile(filename, waveFile)
             % function [sample_data] = readOceanContourFile(filename, waveFile)
             %
@@ -821,204 +892,389 @@ classdef OceanContour
                         meta.coordinate_system = 'ENU';
                         % OK
                     otherwise
-                        errormsg('Unsuported coordinates. %s contains non-ENU data.', filename)
+                        errormsg('Unsuported coordinates. %s contains non-ENU data.', filen)
                 end
-                is_enu = strcmp(meta.coordinate_system, 'ENU');
-                var_mapping = OceanContour.get_varmap(ftype, data_metadata.(group_name).Variables, nBeams, custom_magnetic_declination, binmapped, is_enu);
-                import_mapping = OceanContour.get_importmap(nBeams, custom_magnetic_declination);
+                if ~is_waves
 
-                %subset the global metadata fields to only the respective group.
-                dataset_meta_id = ['_' meta_attr_midname '_'];
-                [~, other_datasets_meta_names] = filterFields(file_metadata, dataset_meta_id);
-                dataset_meta = rmfield(file_metadata, other_datasets_meta_names);
+                    is_enu = strcmp(meta.coordinate_system, 'ENU');
+                    var_mapping = OceanContour.get_varmap(ftype, data_meta.(group_name).Variables, nBeams, custom_magnetic_declination, binmapped, is_enu);
+                    import_mapping = OceanContour.get_importmap(nBeams, custom_magnetic_declination);
 
-                %load extra metadata and unify the variable access pattern into
-                % the same function name.
-                if is_netcdf
-                    meta.dim_meta = data_metadata.(group_name).Dimensions;
-                    meta.var_meta = data_metadata.(group_name).Variables;
-                    gid = dataset_groups(k);
-                    get_var = @(x)(nc_get_var(gid, var_mapping.(x)));                   
-                else
-                    fname = getindex(dataset_groups, k);
-                    get_var = @(x)(transpose(matdata.(fname).(var_mapping.(x))));
-                end
+                    %subset the global metadata fields to only the respective group.
+                    dataset_meta_id = ['_' meta_attr_midname '_'];
+                    [~, other_datasets_meta_names] = filterFields(file_meta, dataset_meta_id);
+                    dataset_meta = rmfield(file_meta, other_datasets_meta_names);
 
-                meta.featureType = '';
-                meta.instrument_make = 'Nortek';
-                meta.instrument_model = get_att('instrument_model');
-
-                % Have observed occasional unfinished/invalid
-                % packet/ensemble. These invalid packets so far always have
-                % a status == 0. So store 
-                iGood = logical(get_var('status'));
-				
-                if is_netcdf
-                    inst_serial_numbers = get_att('instrument_serial_no');
-                    if numel(unique(inst_serial_numbers)) > 1
-                        dispmsg('Multi instrument serial numbers found in %s. Assuming the most frequent is the right one...', filename)    
-                        inst_serial_no = mode(inst_serial_numbers);
+                    %load extra metadata and unify the variable access pattern into
+                    % the same function name.
+                    if is_netcdf
+                        meta.dim_meta = data_meta.(group_name).Dimensions;
+                        meta.var_meta = data_meta.(group_name).Variables;
+                        gid = dataset_groups(k);
+                        get_var = @(x)(nc_get_var(gid, var_mapping.(x)));
                     else
-                        inst_serial_no = inst_serial_numbers(1);
-                    end                                                                        
-                else                                        
-                    %serial no is at metadata/Config level in the mat files.
-                    inst_serial_numbers = get_att('instrument_serial_no');                    
-                    if numel(unique(inst_serial_numbers)) > 1
-                        dispmsg('Multi instrument serial numbers found in %s. Assuming the most frequent is the right one...', filename)    
-                        inst_serial_no = mode(inst_serial_numbers);
+                        fname = getindex(dataset_groups, k);
+                        get_var = @(x)(transpose(matdata.(fname).(var_mapping.(x))));
+                    end
+
+                    meta.featureType = '';
+                    meta.instrument_make = 'Nortek';
+                    meta.instrument_model = get_att('instrument_model');
+
+                    % Have observed occasional unfinished/invalid
+                    % packet/ensemble. These invalid packets so far always have
+                    % a status == 0. So store
+                    iGood = logical(get_var('status'));
+
+                    if is_netcdf
+                        inst_serial_numbers = get_att('instrument_serial_no');
+                        if numel(unique(inst_serial_numbers)) > 1
+                            dispmsg('Multi instrument serial numbers found in %s. Assuming the most frequent is the right one...', filen)
+                            inst_serial_no = mode(inst_serial_numbers);
+                        else
+                            inst_serial_no = inst_serial_numbers(1);
+                        end
                     else
-                        inst_serial_no = inst_serial_numbers(1);
-                    end                                                                        
+                        %serial no is at metadata/Config level in the mat files.
+                        inst_serial_numbers = get_att('instrument_serial_no');
+                        if numel(unique(inst_serial_numbers)) > 1
+                            dispmsg('Multi instrument serial numbers found in %s. Assuming the most frequent is the right one...', filen)
+                            inst_serial_no = mode(inst_serial_numbers);
+                        else
+                            inst_serial_no = inst_serial_numbers(1);
+                        end
+                    end
+
+                    meta.instrument_serial_no = num2str(inst_serial_no);
+
+                    try
+                        assert(contains(meta.instrument_model, 'Signature'))
+                        %TODO: support other models. need more files.
+                    catch
+                        errormsg('Only Signature ADCPs are supported.', filen)
+                    end
+
+                    default_beam_angle = OceanContour.beam_angles.(meta.instrument_model);
+                    instrument_beam_angles = single(get_att('beam_angle'));
+                    try
+                        %the attribute may contain 5 beams (e.g. AST for waves).
+                        % TODO: workaround for inconsistent beam_angles. need more files.
+                        % At the moment just assume the first nBeams-1 are for
+                        % velocity calculation
+                        dataset_beam_angles = instrument_beam_angles(1:meta.nBeams);
+                        assert(isequal(unique(dataset_beam_angles(1:meta.nBeams-1)), default_beam_angle))
+                        %TODO: workaround for inconsistent beam_angles. need more files.
+                    catch
+                        errormsg('Inconsistent beam angle/Instrument information in %s', filen)
+                    end
+                    meta.beam_angle = default_beam_angle;
+
+                    meta.('instrument_sample_interval') = single(get_att('instrument_sample_interval')/get_att('instrument_sample_rate'));
+
+                    % TODO
+                    %mode_sampling_duration_str = ['instrument_' meta_attr_midname '_interval'];
+                    %meta.(mode_sampling_duration_str) = get_att(mode_sampling_duration_str);
+
+                    time = get_var('TIME');
+                    time_units = ncreadatt(filen, ['/Data/' group_name '/time'],'units');
+                    time_cftime = cdfdate2num(time_units,'gregorian',time);
+
+                    try
+                        actual_sample_interval = single(mode(diff(time)) * 86400.);
+                        assert(isequal(meta.('instrument_sample_interval'), actual_sample_interval))
+                    catch
+                        expected = meta.('instrument_sample_interval');
+                        dispmsg('Inconsistent instrument sampling interval in %s . Metadata is set to %d, while time variable indicates %d. Using variable estimates...', filename, expected, actual_sample_interval);
+                        meta.('instrument_sample_interval') = actual_sample_interval;
+                    end
+
+                    z = get_var('HEIGHT_ABOVE_SENSOR');
+                    try
+                        assert(all(z > 0));
+                    catch
+                        errormsg('invalid VelocityENU_Range in %s', filen)
+                        %TODO: plan any workaround for diff ranges. files!?
+                    end
+
+                    binSize = get_var('binSize');
+                    if numel(unique(binSize)) > 1
+                        dispmsg('Inconsistent binSizes in %s. Assuming the most frequent is the right one...',filen)
+                        meta.binSize = mode(binSize);
+                    else
+                        meta.binSize = binSize;
+                    end
+
+                    meta.file_meta = file_meta;
+                    meta.dataset_meta = dataset_meta;
+
+                    switch meta.coordinate_system
+                        case 'ENU'
+                            dimensions = IMOS.gen_dimensions('adcp_enu');
+                        otherwise
+                            dimensions = IMOS.gen_dimensions('adcp');
+                    end
+
+                    status_data = get_var('status');
+                    adcpOrientations = arrayfun(@(x) bin2dec(num2str(bitget(x, 28:-1:26, 'uint32'))), status_data);
+                    adcpOrientation = mode(adcpOrientations); % hopefully the most frequent value reflects the orientation when deployed
+                    % we assume adcpOrientation == 4 by default "ZUP"
+                    meta.adcp_orientation = 'ZUP';
+                    adcp_orientation_conversion  = 1;
+                    if adcpOrientation == 5
+                        meta.adcp_orientation = 'ZDOWN';
+                        adcp_orientation_conversion  = -1;
+                    end
+
+                    dimensions{1}.data = time_cftime;
+                    dimensions{1}.comment = 'time imported from matlabTimeStamp variable';
+                    dimensions{2}.data = z * adcp_orientation_conversion ;
+                    dimensions{2}.comment = 'height imported from VelocityENU_Range';
+
+                    switch meta.coordinate_system
+                        case 'ENU'
+                            onedim_vnames = import_mapping.('ENU').one_dimensional;
+                            twodim_vnames = import_mapping.('ENU').two_dimensional;
+                        otherwise
+                            onedim_vnames = import_mapping.(meta.coordinate_system).one_dimensional;
+                            twodim_vnames = import_mapping.(meta.coordinate_system).two_dimensional;
+                            dispmsg('%s coordinates found in %s is not implemented yet', filename, meta.coordinate_system)
+                    end
+
+                    onedim_vcoords = [dimensions{1}.name ' LATITUDE LONGITUDE ' 'NOMINAL_DEPTH']; %TODO: point to Pressure/Depth via CF-conventions
+                    onedim_vtypes = IMOS.cellfun(@getIMOSType, onedim_vnames);
+                    [onedim_vdata, failed_items] = IMOS.cellfun(get_var, onedim_vnames);
+
+                    if ~isempty(failed_items)
+                        OceanContour.warning_failed(failed_items, filename)
+                    end
+
+                    twodim_vcoords = [dimensions{1}.name ' LATITUDE LONGITUDE ' dimensions{2}.name];
+                    twodim_vtypes = IMOS.cellfun(@getIMOSType, twodim_vnames);
+                    [twodim_vdata, failed_items] = IMOS.cellfun(get_var, twodim_vnames);
+                    if ~isempty(failed_items)
+                        OceanContour.warning_failed(failed_items, filename)
+                    end
+
+                    try
+                        twodim_vdatamask = get_var('data_mask');
+                    catch
+                        twodim_vdatamask = [];
+                    end
+                    has_data_mask = ~isempty(twodim_vdatamask);
+
+                    % TODO: need to put comments in about magnetic declination
+                    % amount and binmapping if they are applied. They go in the
+                    % comments attached to the variables. Also a global comment
+                    % about processing applied in OceanContour.
+
+                    %TODO: Implement unit conversions monads.
+                    if has_data_mask
+                        twodim_vdatamask(twodim_vdatamask == 64) = 4;
+                        twodim_vdatamask(twodim_vdatamask == 0) = 1;
+                        twodim_vdatamask = int8(twodim_vdatamask);
+                        meta.twodim_vdatamask = twodim_vdatamask;
+                        % include flags for the appropriate variables. Assumes
+                        % that vars 1 to 2 of the onedim vars are TEMP and
+                        % PRES_REL; vars 1:6 of the twodim vars are the UCUR,
+                        % VCUR, WCUR, CSPD, CDIR, WCUR_2. Will not be correct if this is
+                        % not the case. Can be smarter about this.
+                        variables = [...
+                            IMOS.featuretype_variables('timeSeries'), ...
+                            IMOS.gen_variables(dimensions, onedim_vnames(1:2), onedim_vtypes(1:2), onedim_vdata(1:2), 'coordinates', onedim_vcoords, 'flags', mode(twodim_vdatamask')'), ...
+                            IMOS.gen_variables(dimensions, onedim_vnames(3:end), onedim_vtypes(3:end), onedim_vdata(3:end), 'coordinates', onedim_vcoords), ...
+                            IMOS.gen_variables(dimensions, twodim_vnames(1:6), twodim_vtypes(1:6), twodim_vdata(1:6), 'coordinates', twodim_vcoords, 'flags',twodim_vdatamask), ...
+                            IMOS.gen_variables(dimensions, twodim_vnames(7:end), twodim_vtypes(7:end), twodim_vdata(7:end), 'coordinates', twodim_vcoords), ...
+                            ];
+                    else
+                        variables = [...
+                            IMOS.featuretype_variables('timeSeries'), ...
+                            IMOS.gen_variables(dimensions, onedim_vnames, onedim_vtypes, onedim_vdata, 'coordinates', onedim_vcoords), ...
+                            IMOS.gen_variables(dimensions, twodim_vnames, twodim_vtypes, twodim_vdata, 'coordinates', twodim_vcoords), ...
+                            ];
+                    end
+
+                else % if this dataset is a waves file:
+                    % read the mapping of IMOS and OceanContour variable
+                    % names from excel file:
+                    var_mapping = struct();
+                    map = readcell('imosParameters_waves.xlsx');
+                    for a = 1:size(map,1)
+                        if ~ismissing(map{a,1})
+                            var_mapping.(map{a,1}) = map{a,2};
+                        end
+                    end
+
+                    % load extra metadata and unify the variable access pattern into
+                    % the same function name.
+                    if is_netcdf
+                        meta.dim_meta = data_meta.(group_name).Dimensions;
+                        meta.var_meta = data_meta.(group_name).Variables;
+                        gid = dataset_groups(k);
+                        get_var = @(x)(nc_get_var(gid, var_mapping.(x)));
+                    else
+                        fname = getindex(dataset_groups, k);
+                        get_var = @(x)(transpose(matdata.(fname).(var_mapping.(x))));
+                    end
+                    % Check for some indication that this is a waves file
+                    % typically DataInfo_waves_processing is set to the processing
+                    % method e.g. "MLMST";
+                    % TODO: what is this field set to if waves processed onboard
+                    % instrument?
+                    flds = fields(file_metadata_wave);
+                    iignore = endsWith(flds,'description');
+                    flds = flds(~iignore);
+
+                    if isempty(sum(contains(flds, 'waves_processing')))
+                        error('OceanContourWaves: wave_file not recognized.')
+                    end
+
+                    meta.coordinate_system = 'ENU';
+                    meta.adcp_orientation = 'ZUP';
+
+                    % add dimensions with their data
+                    time = get_var('TIME');
+                    time_units = ncreadatt(filen, ['/Data/' group_name '/time'],'units');
+                    time_cftime = cdfdate2num(time_units,'gregorian',time);
+
+                    try
+                        actual_sample_interval = single(mode(diff(time)) * 86400.);
+                        assert(isequal(meta.('instrument_sample_interval'), actual_sample_interval))
+                    catch
+                        expected = meta.('instrument_sample_interval');
+                        dispmsg('Inconsistent instrument sampling interval in %s . Metadata is set to %d, while time variable indicates %d. Using variable estimates...', filename, expected, actual_sample_interval);
+                        meta.('instrument_sample_interval') = actual_sample_interval;
+                    end
+                    dimensions{1}.data = time_cftime;
+                    dimensions{1}.comment = 'time imported from matlabTimeStamp variable';
+                    dimensions{2}.data =  'stuff';
+                    dimensions{2}.comment = 'stuff';
+
+                    nDims = numel(wave_dim_names);
+                    dimensions = cell(nDims, 1);
+                    for i=1:nDims
+                        dname = wave_dim_names{i};
+                        try
+                            imos_name = OceanContour.get_imos_mapped_name(dname, var_map, custom_magnetic_declination);
+                        catch
+                            imos_name = dname;
+                        end
+                        dimensions{i}.typeCastFunc = str2func(netcdf3ToMatlabType(imosParameters(imos_name, 'type')));
+                        dimensions{i}.name         = imos_name;
+                        if strcmpi(dname, 'TIME')
+                            dimensions{i}.data = time_cftime;
+                            dimensions{i}.comment = 'time imported from matlabTimeStamp variable';
+                        else
+                            dimensions{i}.data = dimensions{i}.typeCastFunc(get_var(dname));
+                        end
+                        %                   if strcmpi(dims{i, 1}, 'DIR')
+                        %                       dataset.dimensions{i}.compass_correction_applied = meta.compass_correction_applied;
+                        %                       dataset.dimensions{i}.comment  = magdec_attrs.comment;
+                        %                   end
+                    end
+
+                    % list of variable names (not including known dimension
+                    % names
+
+                    idx = contains(known_var_names, [wave_dim_names {'time'} {'TIME'}]);
+                    var_names = known_var_names(~idx);
+
+                    % add variables with their data mapped
+                    nVars = numel(var_names) + 3;
+                    dataset.variables = cell(nVars, 1);
+                    dataset.variables{1}.name = 'TIMESERIES';
+                    dataset.variables{1}.dimensions = [];
+                    dataset.variables{1}.data = 1;
+                    dataset.variables{1}.typeCastFunc =  str2func('int32');
+                    dataset.variables{2}.name = 'LATITUDE';
+                    dataset.variables{2}.dimensions = [];
+                    dataset.variables{2}.data = NaN;
+                    dataset.variables{2}.typeCastFunc =  str2func('double');
+                    dataset.variables{3}.name = 'LONGITUDE';
+                    dataset.variables{3}.dimensions = [];
+                    dataset.variables{3}.data = NaN;
+                    dataset.variables{3}.typeCastFunc =  str2func('double');
+                    dataset.variables{4}.name = 'NOMINAL_DEPTH';
+                    dataset.variables{4}.dimensions = [];
+                    dataset.variables{4}.data = NaN;
+                    dataset.variables{4}.typeCastFunc =  str2func('double');
+
+                    for i=5:nVars
+
+                        vname = var_names{i-3};
+                        idx = strcmp(vname, known_var_names);
+                        vstruct = json_varwaves.variables(idx);
+
+                        if isstruct(vstruct.attribute)
+                            vstruct.attribute = num2cell(vstruct.attribute);
+                        end
+                        imos_name = OceanContour.get_imos_mapped_name(vname, var_map, custom_magnetic_declination);
+                        dataset.variables{i}.name = imos_name;
+                        dataset.variables{i}.typeCastFunc = str2func(netcdf3ToMatlabType(imosParameters(imos_name, 'type')));
+                        % get dimension names of the variable and map to IMOS
+                        % names
+                        vdimnames = strsplit(vstruct.shape, ' ');
+                        vdimnames_imos = vdimnames;
+                        for j = 1:numel(vdimnames)
+                            dname = vdimnames{j};
+                            imos_dname = OceanContour.get_imos_mapped_name(dname, var_map, custom_magnetic_declination);
+                            vdimnames_imos{j} = imos_dname;
+                        end
+                        % get indicies into dimension array
+                        dim_ind = cellfun(@(x) find(ismember(wave_dim_names, x)), vdimnames);
+                        dataset.variables{i}.dimensions = dim_ind;
+                        % some variables have dims [adimname time]
+
+                        if numel(dim_ind) == 1
+                            dataset.variables{i}.data = dataset.variables{i}.typeCastFunc(get_var(vname));
+                        elseif numel(dim_ind) == 2
+                            % Some variables have dimension order list with time at the end eg "EnergySpectra_Frequency time"
+                            % I don't know if this also would happen in mat
+                            % export
+                            if dim_ind(end) == 1
+                                dataset.variables{i}.dimensions = fliplr(dim_ind);
+                                dataset.variables{i}.data = dataset.variables{i}.typeCastFunc(get_var(vname));
+                            else
+                                dataset.variables{i}.data = permute(dataset.variables{i}.typeCastFunc(get_var(vname)), numel(dim_ind):-1:1);
+                            end
+                        elseif numel(dim_ind) == 3
+                            % "shape": "time PressureSpectra_Direction PressureSpectra_Frequency"
+                            % want "time PressureSpectra_Frequency PressureSpectra_Direction"
+                            dataset.variables{i}.dimensions = dim_ind([1 3 2]);
+                            dataset.variables{i}.data = permute(dataset.variables{i}.typeCastFunc(get_var(vname)), [3 1 2]);
+                        else
+                            error(['Multidimensional data not handled : ' vname]);
+                        end
+                        dataset.variables{i}.coordinates = 'TIME LATITUDE LONGITUDE';
+                        % get variable description and save as comment
+                        attr_names = cellfun(@(x) x.name, vstruct.attribute, 'UniformOutput', false);
+                        [tf, ind] = inCell(attr_names, 'description');
+                        if tf
+                            attr = vstruct.attribute{ind};
+                            if ~isempty(attr.value)
+                                dataset.variables{i}.comment = attr.value;
+                            end
+                        end
+                        % get units and save if valid
+                        imos_uom = imosParameters(dataset.variables{i}.name, 'uom');
+                        if imos_uom ~= '?'
+                            dataset.variables{i}.units = imos_uom;
+                        else
+                            [tf, ind] = inCell(attr_names, 'units');
+                            if tf
+                                attr = vstruct.attribute{ind};
+                                if ~isempty(attr.value) && ~strcmp(attr.value, '?')
+                                    dataset.variables{i}.units = attr.value;
+                                end
+                            end
+                        end
+                        %                   if strcmpi(dims{i, 1}, 'DIR')
+                        %                       dataset.dimensions{i}.compass_correction_applied = meta.compass_correction_applied;
+                        %                       dataset.dimensions{i}.comment  = magdec_attrs.comment;
+                        %                   end
+                    end
+
+
                 end
-                                                        
-                meta.instrument_serial_no = num2str(inst_serial_no);
-
-                try
-                    assert(contains(meta.instrument_model, 'Signature'))
-                    %TODO: support other models. need more files.
-                catch
-                    errormsg('Only Signature ADCPs are supported.', filename)
-                end
-
-                default_beam_angle = OceanContour.beam_angles.(meta.instrument_model);
-                instrument_beam_angles = single(get_att('beam_angle'));
-                try
-                    %the attribute may contain 5 beams (e.g. AST for waves).
-                    % TODO: workaround for inconsistent beam_angles. need more files.
-                    % At the moment just assume the first nBeams-1 are for 
-                    % velocity calculation
-                    dataset_beam_angles = instrument_beam_angles(1:meta.nBeams);
-                    assert(isequal(unique(dataset_beam_angles(1:meta.nBeams-1)), default_beam_angle))
-                    %TODO: workaround for inconsistent beam_angles. need more files.
-                catch
-                    errormsg('Inconsistent beam angle/Instrument information in %s', filename)
-                end
-                meta.beam_angle = default_beam_angle;
-
-                meta.('instrument_sample_interval') = single(get_att('instrument_sample_interval')/get_att('instrument_sample_rate'));
-
-                % TODO
-                %mode_sampling_duration_str = ['instrument_' meta_attr_midname '_interval'];
-                %meta.(mode_sampling_duration_str) = get_att(mode_sampling_duration_str);
-
-                time = get_var('TIME');
-                time_cftime = nc_get_var(gid, 'time')/86400.0 + datenum(1970,1,1,0,0,0); %"seconds since 1970-01-01T00:00:00 UTC";
-                
-                try
-                    actual_sample_interval = single(mode(diff(time)) * 86400.);
-                    assert(isequal(meta.('instrument_sample_interval'), actual_sample_interval))
-                catch
-                    expected = meta.('instrument_sample_interval');                    
-                    dispmsg('Inconsistent instrument sampling interval in %s . Metadata is set to %d, while time variable indicates %d. Using variable estimates...', filename, expected, actual_sample_interval);
-                    meta.('instrument_sample_interval') = actual_sample_interval;                    
-                end
-              
-                z = get_var('HEIGHT_ABOVE_SENSOR');              
-                try
-                    assert(all(z > 0));
-                catch
-                    errormsg('invalid VelocityENU_Range in %s', filename)
-                    %TODO: plan any workaround for diff ranges. files!?
-                end
-
-                binSize = get_var('binSize');                
-                if numel(unique(binSize)) > 1
-                    dispmsg('Inconsistent binSizes in %s. Assuming the most frequent is the right one...',filename)                    
-                    meta.binSize = mode(binSize);                    
-                else                    
-                    meta.binSize = binSize;
-                end                                   
-
-                meta.file_meta = file_metadata;
-                meta.dataset_meta = dataset_meta;
-                                
-                switch meta.coordinate_system
-                    case 'ENU'                
-                        dimensions = IMOS.gen_dimensions('adcp_enu');                                                        
-                    otherwise                        
-                        dimensions = IMOS.gen_dimensions('adcp');
-                end
-                
-                status_data = get_var('status');
-                adcpOrientations = arrayfun(@(x) bin2dec(num2str(bitget(x, 28:-1:26, 'uint32'))), status_data);
-                adcpOrientation = mode(adcpOrientations); % hopefully the most frequent value reflects the orientation when deployed
-                % we assume adcpOrientation == 4 by default "ZUP"
-                meta.adcp_orientation = 'ZUP';
-                adcp_orientation_conversion  = 1;
-                if adcpOrientation == 5
-                    meta.adcp_orientation = 'ZDOWN';
-                    adcp_orientation_conversion  = -1;
-                end
-                
-                dimensions{1}.data = time_cftime;
-                dimensions{1}.comment = 'time imported from matlabTimeStamp variable';
-                dimensions{2}.data = z * adcp_orientation_conversion ;
-                dimensions{2}.comment = 'height imported from VelocityENU_Range';
-
-                switch meta.coordinate_system
-                    case 'ENU'
-                        onedim_vnames = import_mapping.('ENU').one_dimensional;
-                        twodim_vnames = import_mapping.('ENU').two_dimensional;
-                    otherwise
-                        onedim_vnames = import_mapping.(meta.coordinate_system).one_dimensional;
-                        twodim_vnames = import_mapping.(meta.coordinate_system).two_dimensional;
-                        dispmsg('%s coordinates found in %s is not implemented yet', filename, meta.coordinate_system)
-                end
-
-                onedim_vcoords = [dimensions{1}.name ' LATITUDE LONGITUDE ' 'NOMINAL_DEPTH']; %TODO: point to Pressure/Depth via CF-conventions
-                onedim_vtypes = IMOS.cellfun(@getIMOSType, onedim_vnames);
-                [onedim_vdata, failed_items] = IMOS.cellfun(get_var, onedim_vnames);
-
-                if ~isempty(failed_items)
-                    OceanContour.warning_failed(failed_items, filename)
-                end
-
-                twodim_vcoords = [dimensions{1}.name ' LATITUDE LONGITUDE ' dimensions{2}.name];
-                twodim_vtypes = IMOS.cellfun(@getIMOSType, twodim_vnames);
-                [twodim_vdata, failed_items] = IMOS.cellfun(get_var, twodim_vnames);
-                if ~isempty(failed_items)
-                    OceanContour.warning_failed(failed_items, filename)
-                end
-                
-                try
-                    twodim_vdatamask = get_var('data_mask');
-                catch
-                    twodim_vdatamask = [];
-                end
-                has_data_mask = ~isempty(twodim_vdatamask);
-
-                % TODO: need to put comments in about magnetic declination
-                % amount and binmapping if they are applied. They go in the
-                % comments attached to the variables. Also a global comment
-                % about processing applied in OceanContour.
-                
-                %TODO: Implement unit conversions monads.
-                if has_data_mask
-                    twodim_vdatamask(twodim_vdatamask == 64) = 4;
-                    twodim_vdatamask(twodim_vdatamask == 0) = 1;
-                    twodim_vdatamask = int8(twodim_vdatamask);
-                    meta.twodim_vdatamask = twodim_vdatamask;
-                    % include flags for the appropriate variables. Assumes
-                    % that vars 1 to 2 of the onedim vars are TEMP and
-                    % PRES_REL; vars 1:6 of the twodim vars are the UCUR,
-                    % VCUR, WCUR, CSPD, CDIR, WCUR_2. Will not be correct if this is
-                    % not the case. Can be smarter about this.
-                    variables = [...
-                        IMOS.featuretype_variables('timeSeries'), ...
-                        IMOS.gen_variables(dimensions, onedim_vnames(1:2), onedim_vtypes(1:2), onedim_vdata(1:2), 'coordinates', onedim_vcoords, 'flags', mode(twodim_vdatamask')'), ...
-                        IMOS.gen_variables(dimensions, onedim_vnames(3:end), onedim_vtypes(3:end), onedim_vdata(3:end), 'coordinates', onedim_vcoords), ...
-                        IMOS.gen_variables(dimensions, twodim_vnames(1:6), twodim_vtypes(1:6), twodim_vdata(1:6), 'coordinates', twodim_vcoords, 'flags',twodim_vdatamask), ...
-                        IMOS.gen_variables(dimensions, twodim_vnames(7:end), twodim_vtypes(7:end), twodim_vdata(7:end), 'coordinates', twodim_vcoords), ...
-                        ];
-                else
-                    variables = [...
-                        IMOS.featuretype_variables('timeSeries'), ...
-                        IMOS.gen_variables(dimensions, onedim_vnames, onedim_vtypes, onedim_vdata, 'coordinates', onedim_vcoords), ...
-                        IMOS.gen_variables(dimensions, twodim_vnames, twodim_vtypes, twodim_vdata, 'coordinates', twodim_vcoords), ...
-                        ];
-                end
-
                 dataset = struct();
                 dataset.toolbox_input_file = filen;
                 dataset.toolbox_parser = mfilename;
