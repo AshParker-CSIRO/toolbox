@@ -36,11 +36,7 @@ if inexistent_file
     errormsg('file %s doesn''t exist', filename)
 end
 
-% returns cell array
-sample_data = OceanContour.readOceanContourFile(filename);
-
-
-% check for WAVES files and add any data to the sample_data structure.
+% check for WAVES files and include in sample_data structure.
 
 [filePath, fileRadName, ~] = fileparts(filename);
 fn = strsplit(fileRadName,'.');
@@ -51,7 +47,14 @@ if ~isempty(txtlist)
     flist = txtlist(1,:);
     if any(contains(flist, fn{1})) % has a corresponding WAVES file
         waveFile = [filePath, filesep, flist{contains(flist, fn{1})}];
-        sample_data = [sample_data, OceanContourWaves.readOceanContourFile(waveFile)];
+    else 
+        waveFile = [];
     end
+else
+    waveFile = [];
 end
+
+% returns cell array
+sample_data = OceanContour.readOceanContourFile(filename, waveFile);
+
 end

@@ -252,6 +252,11 @@ classdef OceanContour
                     attmap.('instrument_burstAltimeter_interval') = OceanContour.build_instrument_name(group_name, 'burstAltimeterInterval');
                 case 'burstRawAltimeter'
                     attmap.('instrument_burstRawAltimeter_interval') = OceanContour.build_instrument_name(group_name, 'burstRawAltimeterInterval');
+                case 'waves'
+                    attmap.('instrument_sample_interval') = OceanContourWaves.build_instrument_name('burst', 'measurementInterval');
+                    attmap.('nSamples') = OceanContourWaves.build_instrument_name('burst', 'nSamples');
+                    attmap.('sampleRate') = OceanContourWaves.build_instrument_name('burst', 'sampleRate');
+                    attmap.('coordinate_system') = OceanContourWaves.build_instrument_name(inst_data_name, 'coordSystem');
             end
 
         end
@@ -567,8 +572,8 @@ classdef OceanContour
             imap.('XYZ') = XYZ;
         end
 
-        function [sample_data] = readOceanContourFile(filename)
-            % function [sample_data] = readOceanContourFile(filename)
+        function [sample_data] = readOceanContourFile(filename, waveFile)
+            % function [sample_data] = readOceanContourFile(filename, waveFile)
             %
             % Read an OceanContour netcdf or mat file and convert fields
             % to the matlab toolbox structure. Variables are read
@@ -598,6 +603,7 @@ classdef OceanContour
             % Inputs:
             %
             % filename [str] - the filename.
+            % waveFile [str] - name of wave file if present. [] if no file
             %
             % Outputs:
             %
@@ -630,7 +636,15 @@ classdef OceanContour
             %
             % author: hugo.oliveira@utas.edu.au
             %
-            narginchk(1, 1)
+            narginchk(1, 2)
+
+            % do we have an associated waves file from OceanCurrent
+            is_wave = false;
+            if nargin == 2
+                if ~isempty(waveFile)
+                    is_wave = true;
+                end
+            end
 
             try
                 info = ncinfo(filename);
@@ -648,19 +662,41 @@ classdef OceanContour
 
             is_netcdf = strcmpi(ftype, 'netcdf');
 
-            if is_netcdf
+            if is_netcdf % assume waves file is the same type if it exists
                 OceanContour.verify_netcdf_groups(info);
                 file_metadata = nc_flat(info.Groups(1).Attributes, false);
                 data_metadata = nc_flat(info.Groups(2).Groups, false);
 
                 ncid = netcdf.open(filename);
-                c = onCleanup(@()netcdf.close(ncid));
+                %                 c = onCleanup(@()netcdf.close(ncid));
                 root_groups = netcdf.inqGrps(ncid);
                 data_group = root_groups(2);
 
                 dataset_groups = netcdf.inqGrps(data_group);
                 get_group_name = @(x)(netcdf.inqGrpName(x));
-                
+                % keep track of which file the dataset_groups belongs to
+                dataset_file = ones(1,length(dataset_groups));
+
+                % waves
+                if is_wave
+                    info_wave = ncinfo(waveFile);
+
+                    OceanContour.verify_netcdf_groups(info_wave);
+                    file_metadata_wave = nc_flat(info_wave.Groups(1).Attributes, false);
+                    data_metadata_wave = nc_flat(info_wave.Groups(2).Groups, false);
+
+                    ncidw = netcdf.open(waveFile);
+                    c = onCleanup(@()netcdf.close(ncidw));
+                    root_groups_wave = netcdf.inqGrps(ncidw);
+                    data_group_wave = root_groups_wave(2);
+
+                    dataset_groups = [dataset_groups, netcdf.inqGrps(data_group_wave)];
+                    get_group_name_wave = @(x)(netcdf.inqGrpName(x));
+                    % keep track of which file the dataset_groups belongs to
+                    dataset_file = [dataset_file, 2*ones(1,length(netcdf.inqGrps(data_group_wave)))];
+
+                end
+
             else
                 OceanContour.verify_mat_groups(matdata);
                 file_metadata = matdata.Config;
@@ -684,14 +720,26 @@ classdef OceanContour
                 % can define the variable names and variables to import.
                 meta = struct();
 
-                group_name = get_group_name(dataset_groups);
+                % assign file metadata
+                file_meta = file_metadata;
+                data_meta = data_metadata;
+                filen = filename;
+                is_waves = false;
+                if dataset_file(k) == 2
+                    file_meta = file_metadata_wave;
+                    data_meta = data_metadata_wave;
+                    filen = waveFile;
+                    is_waves = true;
+                end
+
+                group_name = get_group_name(dataset_groups(k));
                 meta_attr_midname = OceanContour.build_meta_attr_midname(group_name);
 
                 %load toolbox_attr_names:file_attr_names dict.
-                att_mapping = OceanContour.get_attmap(file_metadata, ftype, group_name);
+                att_mapping = OceanContour.get_attmap(file_meta, ftype, group_name);
 
                 %access pattern - use lookup based on expected names,
-                get_att = @(x)(file_metadata.(att_mapping.(x)));
+                get_att = @(x)(file_meta.(att_mapping.(x)));
 
                 nBeams = double(get_att('nBeams'));
 
@@ -707,7 +755,7 @@ classdef OceanContour
                     assert(meta.nBeams == 4 | meta.nBeams == 5);
                     %TODO: support variable nBeams. need more files.
                 catch
-                    errormsg('Only 4 or 5 Beam ADCPs are supported. %s got %d nBeams', filename, meta.nBeams)
+                    errormsg('Only 4 or 5 Beam ADCPs are supported. %s got %d nBeams', filen, meta.nBeams)
                 end
 
                 meta.magDec = 0.0;
@@ -750,9 +798,7 @@ classdef OceanContour
                         binmapped = false;
                     end
                 end
-                
-                is_waves = contains(group_name,'Waves');
-                
+
                 %Now that we know some preliminary info, we can load the variable
                 % name mappings and the list of variables to import.
 
@@ -768,7 +814,7 @@ classdef OceanContour
                         if has_converted_to_enu
                             meta.coordinate_system = 'ENU';
                         else
-                            dispmsg('Unsuported coordinates. %s contains non-ENU data.', filename)
+                            dispmsg('Unsuported coordinates. %s contains non-ENU data.', filen)
                         end
                     case 'ENU'
                         meta.coordinate_system = 'ENU';
@@ -973,7 +1019,7 @@ classdef OceanContour
                 end
 
                 dataset = struct();
-                dataset.toolbox_input_file = filename;
+                dataset.toolbox_input_file = filen;
                 dataset.toolbox_parser = mfilename;
                 dataset.netcdf_group_name = group_name;
                 dataset.meta = meta;
