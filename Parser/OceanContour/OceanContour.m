@@ -302,7 +302,7 @@ classdef OceanContour
             for a = 1:length(txtlist)
                 if contains(txtlist(a).name, fn{1})
                     % read the file into a structure
-                    fid = fopen(txtlist(a).name);
+                    fid = fopen([txtlist(a).folder '/' txtlist(a).name]);
                     str = textscan(fid,'%s%f','delimiter',':', 'headerlines',1);
                     fclose(fid);
                     for b = 1:length(str{1})
