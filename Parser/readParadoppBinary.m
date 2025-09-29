@@ -86,8 +86,8 @@ genericSize = [48; 224; 512];
 continentalIds  = 36;
 continentalSize = NaN; % NaN means variable
 
-aquadoppVelocityIds  = [ 1;  6; 128];
-aquadoppVelocitySize = [42; 36;  42];
+aquadoppVelocityIds  = [ 1;  6; 128; 129];
+aquadoppVelocitySize = [42; 36;  42; 52];
 
 aquadoppProfilerIds  = [ 33; 48; 49;  42];
 aquadoppProfilerSize = [NaN; 24; 60; NaN];
@@ -265,6 +265,7 @@ for i = 1:length(uniqIds)
         case 101, sect = readAwacAST                      (dataSection, cpuEndianness); % 0x65
         case 106, sect = readAwacProcessedVelocity        (dataSection, cpuEndianness); % 0x6A
         case 128, sect = readAquadoppDiagnostics          (dataSection, cpuEndianness); % 0x80
+        case 129, sect = readAquadoppVelocityRawMag       (dataSection, cpuEndianness); % 0x81
     end
 
     if isempty(sect), continue; end
@@ -820,6 +821,129 @@ sect = struct('Sync', Sync, ...
     'Pitch', Pitch, ...
     'Roll', Roll, ...
     'Temperature', Temperature, ...
+    'Vel1', Vel1, ...
+    'Vel2', Vel2, ...
+    'Vel3', Vel3, ...
+    'Amp1', Amp1, ...
+    'Amp2', Amp2, ...
+    'Amp3', Amp3, ...
+    'Fill', Fill);
+
+end
+
+function sect = readAquadoppVelocityRawMag(data, cpuEndianness)
+%READAQUADOPPVELOCITYRAWMAG Reads an Aquadopp velocity including Raw Magnetometer Data section.
+% Id=0x81, Aquadopp Velocity Data
+% SYSTEM INTEGRATOR MANUAL (Dec 2014) pg 37
+
+nRecords = size(data, 1);
+
+Sync        = data(:, 1);
+Id          = data(:, 2);
+Id(:) = 1; % Change to 1 so that downstream read works
+Size        = data(:, 3:4); % uint16
+Time        = readClockData(data(:, 5:10));
+
+Error       = data(:, 11:12); % int16
+block1      = data(:, 13:18); % uint16
+% !!! Heading, pitch and roll can be negative => signed integer
+block2      = data(:, 19:24); % int16
+
+PressureMSB = data(:, 25); % uint8
+% 8 bits status code http://cs.nortek.no/scripts/customer.fcgi?_sf=0&custSessionKey=&customerLang=en&noCookies=true&action=viewKbEntry&id=7
+Status      = uint8(data(:, 26));
+
+PressureLSW = data(:, 27:28); % uint16
+% !!! temperature and velocity can be negative
+block3      = data(:, 29:46); % int16
+block4      = data(:, 47:50); % uint8
+Checksum    = data(:, 51:52); % uint16
+
+% let's process uint16s in one call
+blocks = bytecast(reshape([Size block1 PressureLSW Checksum]', [], 1), 'L', 'uint16', cpuEndianness);
+Size        = blocks(1:6:end);
+Analn1      = blocks(2:6:end);
+Battery     = blocks(3:6:end);
+Analn2      = blocks(4:6:end);
+PressureLSW = blocks(5:6:end);
+Checksum    = blocks(6:6:end);
+
+% let's process int16s in one call
+blocks = bytecast(reshape([Error block2 block3]', [], 1), 'L', 'int16', cpuEndianness);
+Error       = blocks(1:13:end);
+Heading     = blocks(2:13:end);
+Pitch       = blocks(3:13:end);
+Roll        = blocks(4:13:end);
+Temperature = blocks(5:13:end);
+SoundSpeed  = blocks(6:13:end);
+EnsCount    = blocks(7:13:end);
+CompHx      = blocks(8:13:end);
+CompHy      = blocks(9:13:end);
+CompHz      = blocks(10:13:end);
+Vel1        = blocks(11:13:end);
+Vel2        = blocks(12:13:end);
+Vel3        = blocks(13:13:end);
+
+% let's process uint8s in one call
+blocks = bytecast(reshape([PressureMSB block4]', [], 1), 'L', 'uint8', cpuEndianness);
+PressureMSB = blocks(1:5:end);
+Amp1        = blocks(2:5:end);
+Amp2        = blocks(3:5:end);
+Amp3        = blocks(4:5:end);
+Fill        = blocks(5:5:end);
+
+if nRecords > 1
+    Sync = num2cell(Sync);
+    Id = num2cell(Id);
+    Size = num2cell(Size);
+    Time = num2cell(Time);
+    Error = num2cell(Error);
+    PressureMSB = num2cell(PressureMSB);
+    Status = num2cell(Status);
+    PressureLSW = num2cell(PressureLSW);
+    Checksum = num2cell(Checksum);
+    Analn1 = num2cell(Analn1);
+    Battery = num2cell(Battery);
+    Analn2 = num2cell(Analn2);
+    Heading = num2cell(Heading);
+    Pitch = num2cell(Pitch);
+    Roll = num2cell(Roll);
+    Temperature = num2cell(Temperature);
+    SoundSpeed  = num2cell(SoundSpeed);
+    EnsCount    = num2cell(EnsCount);
+    CompHx      = num2cell(CompHx);
+    CompHy      = num2cell(CompHy);
+    CompHz      = num2cell(CompHz);
+    Vel1 = num2cell(Vel1);
+    Vel2 = num2cell(Vel2);
+    Vel3 = num2cell(Vel3);
+    Amp1 = num2cell(Amp1);
+    Amp2 = num2cell(Amp2);
+    Amp3 = num2cell(Amp3);
+    Fill = num2cell(Fill);
+end
+
+sect = struct('Sync', Sync, ...
+    'Id', Id, ...
+    'Size', Size, ...
+    'Time', Time, ...
+    'Error', Error, ...
+    'PressureMSB', PressureMSB, ...
+    'Status', Status, ...
+    'PressureLSW', PressureLSW, ...
+    'Checksum', Checksum, ...
+    'Analn1', Analn1, ...
+    'Battery', Battery, ...
+    'Analn2', Analn2, ...
+    'Heading', Heading, ...
+    'Pitch', Pitch, ...
+    'Roll', Roll, ...
+    'Temperature', Temperature, ...
+    'SoundSpeed', SoundSpeed,...
+    'EnsCount', EnsCount,...
+    'CompHx',CompHx,...
+    'CompHy',CompHy,...
+    'CompHz',CompHz,...    
     'Vel1', Vel1, ...
     'Vel2', Vel2, ...
     'Vel3', Vel3, ...
