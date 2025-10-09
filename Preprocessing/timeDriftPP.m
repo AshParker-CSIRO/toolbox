@@ -129,7 +129,7 @@ if ~auto
     set(startOffsetFields,   'Units', 'normalized');
     set(endOffsetFields,   'Units', 'normalized');
     
-    set(f,             'Position', [0.2 0.35 0.6 0.0222 * (nSample + 1)]); % need to include 1 extra space for the row of buttons
+    set(f,             'Position', [0.2 0.1 0.6 0.0222 * (nSample + 1)]); % need to include 1 extra space for the row of buttons
     
     rowHeight = 1 / (nSample + 1);
     
