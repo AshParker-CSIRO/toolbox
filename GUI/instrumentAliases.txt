@@ -3,3 +3,8 @@
 %
 % Instrument Exact Name, Alias/Abbreviation
 Seabird SBE19plus, SBE19+
+Seabird SBE26plus, SBE26
+Seabird SBE37SMP, SBE37SMP
+Seabird SBE37SMP-ODO, SBE37SMP
+Aquadopp DW 2MHz, AQD
+

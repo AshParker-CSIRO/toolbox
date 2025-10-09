@@ -2,7 +2,7 @@
 % ex. : /home/ggalibert/OceanDB.mdb or imos-ddb
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
-toolbox.ddb = /oa-decadal-climate/work/observations/oceanobs_data/EACdata/mooring/IMOScsvfiles/
+toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files/
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -58,7 +58,7 @@ autoQCManager.autoQCDefaultChain.timeSeries = imosImpossibleDateQC imosImpossibl
 autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC imosTimeSeriesSpikeQC
 
 % last selected set of auto QC routines
-autoQCManager.autoQCChain.timeSeries = imosGlobalRangeQC imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosErrorVelocitySetQC imosVerticalVelocityQC imosHorizontalVelocitySetQC imosTiltVelocitySetQC imosHistoricalManualSetQC imosSalinityFromPTQC
+autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % prompt for preprocessing (if false,
@@ -70,7 +70,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = adcpBinMappingPP adcpWorkhorseCorrMagPP adcpWorkhorseEchoRangePP adcpWorkhorseVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP magneticDeclinationPP
+preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -81,20 +81,20 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /oa-decadal-climate/work/observations/oceanobs_data/EACdata/mooring/EAC1909_2105/raw_data
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
 startDialog.dataDir.profile = 
-startDialog.fieldTrip.timeSeries = EAC-2021-05-06
+startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile = 
-startDialog.lowDate.timeSeries = 712224
+startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.profile = 
-startDialog.highDate.timeSeries = 738501
+startDialog.highDate.timeSeries = 739898.2424
 startDialog.highDate.profile = 
 
 % last selected directory for manual data import
-importManager.manualDir =
+importManager.manualDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
 
 % last selected directory for file export
-exportDialog.defaultDir = /oa-decadal-climate/work/observations/oceanobs_data/EACdata/mooring/EAC1909_2105/data_processing/IMOSnetcdf/EAC0500
+exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
 
 % prompt user to select parser if an appropriate one
 % cannot be found (if false, the data is not imported)
@@ -102,7 +102,7 @@ importManager.noParserPrompt = true
 
 % last selected directory for saving graphs as images
 saveGraph.noPrompt  = false
-saveGraph.exportDir =
+saveGraph.exportDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504_plots/
 saveGraph.imgType   = png
 
 % visual QC plots export properties
