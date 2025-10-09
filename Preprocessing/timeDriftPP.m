@@ -129,7 +129,11 @@ if ~auto
     set(startOffsetFields,   'Units', 'normalized');
     set(endOffsetFields,   'Units', 'normalized');
     
+<<<<<<< Updated upstream
     set(f,             'Position', [0.2 0.1 0.6 0.0222 * (nSample + 1)]); % need to include 1 extra space for the row of buttons
+=======
+    set(f,             'Position', [0.2 0.1 0.6 0.0444 * (nSample + 1)]); % need to include 1 extra space for the row of buttons
+>>>>>>> Stashed changes
     
     rowHeight = 1 / (nSample + 1);
     

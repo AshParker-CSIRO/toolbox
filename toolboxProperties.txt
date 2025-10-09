@@ -1,8 +1,12 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
 % ex. : /home/ggalibert/OceanDB.mdb or imos-ddb
+<<<<<<< Updated upstream
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
 toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files/
+=======
+toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files
+>>>>>>> Stashed changes
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -11,7 +15,7 @@ toolbox.ddb.driver =
 
 % database connection string, must include user and password if required by the database
 % ex. : "jdbc:ucanaccess:///home/ggalibert/OceanDB.mdb;jackcessOpener=org.imos.ddb.CryptCodecOpener"
-toolbox.ddb.connection =
+toolbox.ddb.connection = 
 
 % user's login and password to database
 toolbox.ddb.user =
@@ -55,10 +59,14 @@ exportNetCDF.fileDateFormat = yyyymmddTHHMMSSZ
 
 % default set of auto QC routines
 autoQCManager.autoQCDefaultChain.timeSeries = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosTiltVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosCorrMagVelocitySetQC imosHistoricalManualSetQC
-autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC imosTimeSeriesSpikeQC
+autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % last selected set of auto QC routines
+<<<<<<< Updated upstream
 autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
+=======
+autoQCManager.autoQCChain.timeSeries = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosTiltVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosCorrMagVelocitySetQC imosHistoricalManualSetQC
+>>>>>>> Stashed changes
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % prompt for preprocessing (if false,
@@ -70,7 +78,11 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
+<<<<<<< Updated upstream
 preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
+=======
+preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP magneticDeclinationPP depthPP
+>>>>>>> Stashed changes
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -81,6 +93,7 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
+<<<<<<< Updated upstream
 startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
 startDialog.dataDir.profile = 
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
@@ -95,6 +108,22 @@ importManager.manualDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/moorin
 
 % last selected directory for file export
 exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
+=======
+startDialog.dataDir.timeSeries = /datasets/work/oa-srsalt/work/scripts/ash/imos-toolbox-bec
+startDialog.dataDir.profile =
+startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
+startDialog.fieldTrip.profile =
+startDialog.lowDate.timeSeries = 0
+startDialog.lowDate.profile =
+startDialog.highDate.timeSeries = 739899.1696
+startDialog.highDate.profile =
+
+% last selected directory for manual data import
+importManager.manualDir = 
+
+% last selected directory for file export
+exportDialog.defaultDir =
+>>>>>>> Stashed changes
 
 % prompt user to select parser if an appropriate one
 % cannot be found (if false, the data is not imported)
@@ -106,8 +135,8 @@ saveGraph.exportDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/AC
 saveGraph.imgType   = png
 
 % visual QC plots export properties
-visualQC.export = false
-visualQC.fastScatter = false
+visualQC.export = true
+visualQC.fastScatter = true
 
 % default nonspecialized scalar colormap and number of colour steps
 % jet | parula | viridis

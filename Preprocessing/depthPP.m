@@ -448,7 +448,11 @@ if ~auto && ~isProfile
     set(secondNearestInstUic, 'Units', 'normalized');
     set(paramsStringUic,      'Units', 'normalized');
     
+<<<<<<< Updated upstream
     set(f,             'Position', [0.2 0.1 0.6 0.0222 * (nDatasets + 2 )]); % need to include 2 extra space for the depth.txt parameters and the row of buttons
+=======
+    set(f,             'Position', [0.2 0.1 0.6 0.0444 * (nDatasets + 2 )]); % need to include 2 extra space for the depth.txt parameters and the row of buttons
+>>>>>>> Stashed changes
     
     rowHeight = 1 / (nDatasets + 2);
     
