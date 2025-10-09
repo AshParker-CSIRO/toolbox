@@ -1,6 +1,8 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
 % ex. : /home/ggalibert/OceanDB.mdb or imos-ddb
-toolbox.ddb = /home/par520/db_files/SWOT_ACC_FOCUS
+
+%toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
+toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files/
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -9,7 +11,7 @@ toolbox.ddb.driver =
 
 % database connection string, must include user and password if required by the database
 % ex. : "jdbc:ucanaccess:///home/ggalibert/OceanDB.mdb;jackcessOpener=org.imos.ddb.CryptCodecOpener"
-toolbox.ddb.connection =
+toolbox.ddb.connection = 
 
 % user's login and password to database
 toolbox.ddb.user =
@@ -56,7 +58,7 @@ autoQCManager.autoQCDefaultChain.timeSeries = imosImpossibleDateQC imosImpossibl
 autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % last selected set of auto QC routines
-autoQCManager.autoQCChain.timeSeries = imosGlobalRangeQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosCorrMagVelocitySetQC imosEchoRangeSetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosSurfaceDetectionByDepthSetQC imosHistoricalManualSetQC
+autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % prompt for preprocessing (if false,
@@ -68,7 +70,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
+preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -79,8 +81,8 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/data_in/rec_202504
-startDialog.dataDir.profile =
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
+startDialog.dataDir.profile = 
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile =
 startDialog.lowDate.timeSeries = 0
@@ -92,7 +94,7 @@ startDialog.highDate.profile =
 importManager.manualDir =
 
 % last selected directory for file export
-exportDialog.defaultDir =
+exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
 
 % prompt user to select parser if an appropriate one
 % cannot be found (if false, the data is not imported)
