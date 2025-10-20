@@ -49,8 +49,7 @@ if strcmpi(qcLevel, 'raw'), return; end
 
 for k = 1:length(sample_data)
     % do not process if not Nortek
-    if ~strcmpi(sample_data{k}.meta.instrument_make, 'Nortek'), continue;
-    end
+    if ~strcmpi(sample_data{k}.meta.instrument_make, 'Nortek'), continue; end
   
     % do not process if not current profiler ADCP
     % distAlongBeamsIdx = getVar(sample_data{k}.dimensions, 'DIST_ALONG_BEAMS');
@@ -77,8 +76,8 @@ for k = 1:length(sample_data)
     if ~(vel1Idx && vel2Idx && vel3Idx), continue; end
     
     % do not process if more than 3 beams
-    % vel4Idx  = getVar(sample_data{k}.variables, 'VEL4');
-    % if vel4Idx, continue; end
+    vel4Idx  = getVar(sample_data{k}.variables, 'VEL4');
+    if vel4Idx, continue; end
     
     % do not process if transformation matrix not known
     if isfield(sample_data{k}.meta, 'beam_to_xyz_transform')
