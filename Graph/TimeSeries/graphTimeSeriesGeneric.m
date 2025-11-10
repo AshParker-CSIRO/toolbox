@@ -101,7 +101,7 @@ end
 % set background to be transparent (same as background color)
 set(ax, 'Color', 'none')
 
-if strncmp(var.name, 'DEPTH', 4) || strncmp(var.name, 'PRES', 4) || strncmp(var.name, 'PRES_REL', 8)
+if strncmp(var.name, 'DEPTH', 4) || strncmp(var.name, 'PRES', 4) || strncmp(var.name, 'PRES_REL', 8) || strncmp(var.name, 'DOX', 8)
     set(ax, 'YDir', 'reverse');
 end
 

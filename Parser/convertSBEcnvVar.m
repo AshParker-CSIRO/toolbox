@@ -80,6 +80,13 @@ switch name
       name = 'TIME';
       data = data / 86400 + datenum(1970,1,1,0,0,0);
       comment = '';
+
+      % elapsed time (days since 1970-01-01)
+    case 'timeJV2'
+      name = 'TIME';
+      data = data + datenum(1970,1,1,0,0,0);
+      comment = '';
+
         
     % strain gauge pressure (dbar)
     case {'pr', 'prM', 'prdM', 'prDM', 'prSM'}
