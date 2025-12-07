@@ -1,12 +1,8 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
 % ex. : /home/ggalibert/OceanDB.mdb or imos-ddb
-<<<<<<< Updated upstream
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
-toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files/
-=======
-toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files
->>>>>>> Stashed changes
+toolbox.ddb = /home/par520/db_files/SWOT_ACC_FOCUS/
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
