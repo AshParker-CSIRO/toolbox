@@ -78,11 +78,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-<<<<<<< Updated upstream
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
-=======
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP magneticDeclinationPP depthPP
->>>>>>> Stashed changes
+preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -93,23 +89,7 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-<<<<<<< Updated upstream
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-startDialog.dataDir.profile = 
-startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
-startDialog.fieldTrip.profile = 
-startDialog.lowDate.timeSeries = 0
-startDialog.lowDate.profile = 
-startDialog.highDate.timeSeries = 739898.2424
-startDialog.highDate.profile = 
-
-% last selected directory for manual data import
-importManager.manualDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-
-% last selected directory for file export
-exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-=======
-startDialog.dataDir.timeSeries = /datasets/work/oa-srsalt/work/scripts/ash/imos-toolbox-bec
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504
 startDialog.dataDir.profile =
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile =
