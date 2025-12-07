@@ -61,7 +61,7 @@ autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLo
 <<<<<<< Updated upstream
 autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
 =======
-autoQCManager.autoQCChain.timeSeries = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosTiltVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosCorrMagVelocitySetQC imosHistoricalManualSetQC
+autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
 >>>>>>> Stashed changes
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
@@ -74,7 +74,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
+preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles

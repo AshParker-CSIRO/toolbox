@@ -125,7 +125,7 @@ for k = 1:length(sample_data)
         end
     end
     
-    %% Extract ENU velocity components into separate variables
+    % Extract ENU velocity components into separate variables
     UCUR = squeeze(velENU(1, :, :))';
     VCUR = squeeze(velENU(2, :, :))';
     WCUR = squeeze(velENU(3, :, :))';
