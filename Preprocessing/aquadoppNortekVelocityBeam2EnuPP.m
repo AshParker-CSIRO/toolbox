@@ -125,10 +125,10 @@ for k = 1:length(sample_data)
         end
     end
     
-    // % Extract ENU velocity components into separate variables
-    // UCUR = squeeze(velENU(1, :, :));
-    // VCUR = squeeze(velENU(2, :, :));
-    // WCUR = squeeze(velENU(3, :, :));
+    %% Extract ENU velocity components into separate variables
+    UCUR = squeeze(velENU(1, :, :))';
+    VCUR = squeeze(velENU(2, :, :))';
+    WCUR = squeeze(velENU(3, :, :))';
     
     Beam2EnuComment = ['aquadoppNortekVelocityBeam2EnuPP.m: velocity data in Easting Northing Up (ENU) coordinates has been calculated from velocity data in Beams coordinates ' ...
         'using heading and tilt information and instrument coordinate transform matrix.'];
