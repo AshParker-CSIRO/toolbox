@@ -85,7 +85,7 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/data_in/rec_202504
 startDialog.dataDir.profile =
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile =
