@@ -68,7 +68,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
+preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -79,7 +79,7 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/data_in/rec_202504
 startDialog.dataDir.profile =
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile =
