@@ -70,7 +70,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
+preprocessManager.preprocessChain.timeSeries = salinityPP oxygenPP absiDecibelBasicPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP depthPP timeDriftPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
