@@ -131,6 +131,7 @@ sample_data.meta.instrument_firmware        = hardware.FWversion;
 sample_data.meta.instrument_sample_interval = median(diff(time*24*3600));
 sample_data.meta.instrument_average_interval= user.AvgInterval;
 sample_data.meta.beam_angle                 = 45;   % http://wiki.neptunecanada.ca/download/attachments/18022846/Nortek+Aquadopp+Current+Meter+User+Manual+-+Rev+C.pdf
+sample_data.meta.beam_to_xyz_transform      = head.TransformationMatrix;
 sample_data.meta.featureType                = mode;
 
 % add dimensions with their data mapped
