@@ -1,12 +1,7 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
-% ex. : /home/ggalibert/OceanDB.mdb or imos-ddb
-<<<<<<< Updated upstream
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
-toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files/
-=======
-toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/imos_db_files
->>>>>>> Stashed changes
+toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/mooring_proc/IMOS_MATLAB_Toolbox/db_files/FOCUS_ACC_MOORING/
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -62,11 +57,7 @@ autoQCManager.autoQCDefaultChain.timeSeries = imosImpossibleDateQC imosImpossibl
 autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % last selected set of auto QC routines
-<<<<<<< Updated upstream
-autoQCManager.autoQCChain.timeSeries = imosInOutWaterQC imosGlobalRangeQC imosSalinityFromPTQC imosCorrMagVelocitySetQC imosErrorVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosTiltVelocitySetQC imosHistoricalManualSetQC
-=======
 autoQCManager.autoQCChain.timeSeries = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosTiltVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosCorrMagVelocitySetQC imosHistoricalManualSetQC
->>>>>>> Stashed changes
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % prompt for preprocessing (if false,
@@ -78,11 +69,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-<<<<<<< Updated upstream
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
-=======
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpNortekVelocityBeam2EnuPP magneticDeclinationPP depthPP
->>>>>>> Stashed changes
+preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpWorkhorseCorrMagPP adcpWorkhorseEchoRangePP magneticDeclinationPP depthPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -93,29 +80,15 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-<<<<<<< Updated upstream
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-startDialog.dataDir.profile = 
-startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
-startDialog.fieldTrip.profile = 
-startDialog.lowDate.timeSeries = 0
-startDialog.lowDate.profile = 
-startDialog.highDate.timeSeries = 739898.2424
-startDialog.highDate.profile = 
-
-% last selected directory for manual data import
-importManager.manualDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-
-% last selected directory for file export
-exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504/
-=======
-startDialog.dataDir.timeSeries = /datasets/work/oa-srsalt/work/scripts/ash/imos-toolbox-bec
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/data_in/
 startDialog.dataDir.profile =
+startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
 startDialog.fieldTrip.profile =
 startDialog.lowDate.timeSeries = 0
+startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.profile =
-startDialog.highDate.timeSeries = 739899.1696
+startDialog.highDate.timeSeries = 739898.2424
 startDialog.highDate.profile =
 
 % last selected directory for manual data import
@@ -123,7 +96,6 @@ importManager.manualDir =
 
 % last selected directory for file export
 exportDialog.defaultDir =
->>>>>>> Stashed changes
 
 % prompt user to select parser if an appropriate one
 % cannot be found (if false, the data is not imported)
