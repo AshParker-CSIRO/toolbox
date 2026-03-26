@@ -1,7 +1,7 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
-toolbox.ddb = /datasets/work/oa-srsalt/work/scripts/ash/mooring_proc/IMOS_MATLAB_Toolbox/db_files/FOCUS_ACC_MOORING/
+toolbox.ddb = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_db_files/
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -80,15 +80,15 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/data_in/
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_processing/data_in/
 startDialog.dataDir.profile =
-startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
-startDialog.fieldTrip.timeSeries = FOCUS-2025-04-06
+startDialog.fieldTrip.timeSeries = 
+startDialog.fieldTrip.timeSeries = 
 startDialog.fieldTrip.profile =
 startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.profile =
-startDialog.highDate.timeSeries = 739898.2424
+startDialog.highDate.timeSeries = 
 startDialog.highDate.profile =
 
 % last selected directory for manual data import
@@ -103,7 +103,7 @@ importManager.noParserPrompt = true
 
 % last selected directory for saving graphs as images
 saveGraph.noPrompt  = false
-saveGraph.exportDir = /datasets/work/oa-aapp-ocean/work/2023_12_FOCUS/mooring/ACCFOC_PTSUVW_202504_plots/
+saveGraph.exportDir = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_outputs/
 saveGraph.imgType   = png
 
 % visual QC plots export properties
