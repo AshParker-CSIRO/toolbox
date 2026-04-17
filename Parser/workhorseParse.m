@@ -45,8 +45,9 @@ function sample_data = workhorseParse( filename, ~)
   % wave data separately (.PD0 and .WVS)
   [filePath, fileRadName, ~] = fileparts(filename);
 
-  currentFile   = fullfile(filePath, [fileRadName '.PD0']);
-  waveFile      = fullfile(filePath, [fileRadName '.WVS']);
+  %currentFile   = fullfile(filePath, [fileRadName '.PD0']);
+    currentFile   = fullfile(filePath, [fileRadName '.000']);
+    waveFile      = fullfile(filePath, [fileRadName '.WVS']);
 
   isWaveData = exist(currentFile, 'file') && exist(waveFile, 'file');
   ensembles = readWorkhorseEnsembles(filename);

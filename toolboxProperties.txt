@@ -1,7 +1,7 @@
 % filename or ODBC DSN of MS-ACCESS deployment database
 
 %toolbox.ddb = /home/cow074/ocean_obs/EACdata/mooring/IMOScsvfiles/
-toolbox.ddb = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_db_files/
+toolbox.ddb = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_db_files
 
 % or full connection details to other kind of deployment database :
 % class name of JDBC database driver
@@ -57,7 +57,7 @@ autoQCManager.autoQCDefaultChain.timeSeries = imosImpossibleDateQC imosImpossibl
 autoQCManager.autoQCDefaultChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % last selected set of auto QC routines
-autoQCManager.autoQCChain.timeSeries = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosSideLobeVelocitySetQC imosTiltVelocitySetQC imosHorizontalVelocitySetQC imosVerticalVelocityQC imosCorrMagVelocitySetQC imosHistoricalManualSetQC
+autoQCManager.autoQCChain.timeSeries = imosImpossibleDateQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC
 autoQCManager.autoQCChain.profile = imosImpossibleDateQC imosImpossibleLocationSetQC imosInOutWaterQC imosGlobalRangeQC imosImpossibleDepthQC imosSalinityFromPTQC imosHistoricalManualSetQC
 
 % prompt for preprocessing (if false,
@@ -69,7 +69,7 @@ preprocessManager.preprocessDefaultChain.timeSeries = depthPP salinityPP oxygenP
 preprocessManager.preprocessDefaultChain.profile = depthPP salinityPP oxygenPP
 
 % last selected set of preprocessing routines
-preprocessManager.preprocessChain.timeSeries = timeDriftPP salinityPP oxygenPP adcpBinMappingPP adcpNortekVelocityBeam2EnuPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseVelocityBeam2EnuPP adcpWorkhorseCorrMagPP adcpWorkhorseEchoRangePP magneticDeclinationPP depthPP
+preprocessManager.preprocessChain.timeSeries = adcpBinMappingPP adcpWorkhorseRDIensembleAveragingPP adcpWorkhorseCorrMagPP adcpWorkhorseEchoRangePP adcpWorkhorseVelocityBeam2EnuPP magneticDeclinationPP depthPP
 preprocessManager.preprocessChain.profile = depthPP salinityPP oxygenPP
 
 % file status dialog formatting styles
@@ -80,22 +80,22 @@ dataFileStatusDialog.noFileFormat          = bold
 dataFileStatusDialog.multipleFileFormat    = italic
 
 % last selected values for start dialog
-startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_processing/data_in/
+startDialog.dataDir.timeSeries = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/data
 startDialog.dataDir.profile =
-startDialog.fieldTrip.timeSeries = 
-startDialog.fieldTrip.timeSeries = 
+startDialog.fieldTrip.timeSeries = MEANDER-2020-08-20
+startDialog.fieldTrip.timeSeries = MEANDER-2020-08-20
 startDialog.fieldTrip.profile =
 startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.timeSeries = 0
 startDialog.lowDate.profile =
-startDialog.highDate.timeSeries = 
+startDialog.highDate.timeSeries = 740088.0393
 startDialog.highDate.profile =
 
 % last selected directory for manual data import
 importManager.manualDir = 
 
 % last selected directory for file export
-exportDialog.defaultDir =
+exportDialog.defaultDir = /datasets/work/oa-aapp-ocean/work/ash/2018_10_review/toolbox_outputs
 
 % prompt user to select parser if an appropriate one
 % cannot be found (if false, the data is not imported)
